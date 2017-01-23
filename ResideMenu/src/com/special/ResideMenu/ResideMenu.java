@@ -6,6 +6,8 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Build;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.*;
 import android.view.animation.AnimationUtils;
@@ -137,26 +139,36 @@ public class ResideMenu extends FrameLayout {
 
     @Override
     protected boolean fitSystemWindows(Rect insets) {
-        // Applies the content insets to the view's padding, consuming that
-        // content (modifying the insets to be 0),
-        // and returning true. This behavior is off by default and can be
-        // enabled through setFitsSystemWindows(boolean)
+        // Applies the content insets to the view's padding, consuming that content (modifying the insets to be 0),
+        // and returning true. This behavior is off by default and can be enabled through setFitsSystemWindows(boolean)
         // in api14+ devices.
 
-        // This is added to fix soft navigationBar's overlapping to content above LOLLIPOP
-        int bottomPadding = viewActivity.getPaddingBottom() + insets.bottom;
-        boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
-        boolean hasHomeKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_HOME);
-        if (!hasBackKey || !hasHomeKey) {//there's a navigation bar
-            bottomPadding += getNavigationBarHeight();
+        int bottomPadding = insets.bottom;
+
+        if(Build.VERSION.SDK_INT >= 21 && hasActionBar()){
+            Resources resources = getContext().getResources();
+            int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                bottomPadding += resources.getDimensionPixelSize(resourceId);
+            }
         }
 
-        this.setPadding(viewActivity.getPaddingLeft() + insets.left,
-                viewActivity.getPaddingTop() + insets.top,
-                viewActivity.getPaddingRight() + insets.right,
-                bottomPadding);
+        this.setPadding(viewActivity.getPaddingLeft() + insets.left, viewActivity.getPaddingTop() + insets.top,
+                viewActivity.getPaddingRight() + insets.right, viewActivity.getPaddingBottom() + bottomPadding);
         insets.left = insets.top = insets.right = insets.bottom = 0;
         return true;
+    }
+
+    boolean hasActionBar(){
+        //check support action bar
+        if(activity instanceof AppCompatActivity){
+            AppCompatActivity actionBarActivity = (AppCompatActivity) activity;
+
+            return actionBarActivity.getSupportActionBar() != null;
+        }
+
+        //check regular action bar
+        return activity.getActionBar() != null;
     }
 
     private int getNavigationBarHeight() {

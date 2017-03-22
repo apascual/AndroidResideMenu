@@ -2,15 +2,15 @@ package com.special.ResideMenuDemo;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 import com.special.ResideMenu.ResideMenu;
 import com.special.ResideMenu.ResideMenuItem;
 
-public class MenuActivity extends FragmentActivity implements View.OnClickListener{
+public class MenuActivity extends AppCompatActivity implements View.OnClickListener{
 
     private ResideMenu resideMenu;
     private MenuActivity mContext;

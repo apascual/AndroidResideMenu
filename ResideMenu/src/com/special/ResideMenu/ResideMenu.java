@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.*;
@@ -144,8 +143,10 @@ public class ResideMenu extends FrameLayout {
         // in api14+ devices.
 
         int bottomPadding = insets.bottom;
+        boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
+        boolean hasHomeKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_HOME);
 
-        if(Build.VERSION.SDK_INT >= 21 && hasActionBar()){
+        if (Build.VERSION.SDK_INT >= 21 && hasActionBar() && !(hasBackKey || hasHomeKey)) {
             Resources resources = getContext().getResources();
             int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
             if (resourceId > 0) {
@@ -159,9 +160,9 @@ public class ResideMenu extends FrameLayout {
         return true;
     }
 
-    boolean hasActionBar(){
+    boolean hasActionBar() {
         //check support action bar
-        if(activity instanceof AppCompatActivity){
+        if (activity instanceof AppCompatActivity) {
             AppCompatActivity actionBarActivity = (AppCompatActivity) activity;
 
             return actionBarActivity.getSupportActionBar() != null;
